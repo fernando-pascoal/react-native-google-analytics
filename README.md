@@ -30,16 +30,30 @@ export default class App extends React.Component {
     experiments: {},	
   }	
   componentWillMount() {	
+    const ga = new Analytics('UA-XXXXXXXX-X', clientId, 1, DeviceInfo.getUserAgent());	
+    this.sendAEvent(ga);
+    this.sendAScreenView(ga);
+  }	
+  sendAScreenView = (GA)=>{
     let clientId = DeviceInfo.getUniqueID();	
-    ga = new Analytics('UA-XXXXXXXX-X', clientId, 1, DeviceInfo.getUserAgent());	
     let screenView = new GAHits.ScreenView(	
       'Example App',	
       'Welcome Screen',	
       DeviceInfo.getReadableVersion(),	
       DeviceInfo.getBundleId()	
     );	
-    ga.send(screenView);	
-  }	
+    GA.send(screenView);
+  }
+  sendAEvent = (GA)=>{
+    const EventToSend = new Hits.Event('category_event', 'click', 'click into category');
+    GA.send(EventToSend)
+    .then(() => {
+      console.log(`[GA EVENTS] sended `);
+    })
+    .catch(() => {
+      console.log(`[GA EVENTS ERROR] `);
+    });
+  }
   render() {	
     return (	
       <View style={styles.container}>	
